@@ -15,12 +15,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bindingMainBinding: ActivityMainBinding
     private lateinit var myJob: Job
+    private val TAG = "MyTag" + MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +32,9 @@ class MainActivity : AppCompatActivity() {
             val myURL = URL("https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0014-001?Authorization=CWA-1394A705-AF6D-4DD6-9D2A-28ABBA9CF3B6&format=JSON")
                 .readText()
             var myJsonData = Gson().fromJson(myURL, MyEvent::class.java)
-            println("--------------------")
-            myJsonData.result.fields.forEach {
-                println(it)
+            withContext(Dispatchers.Main){
+                bindingMainBinding.TV1.text = myJsonData.result.fields.toString()
             }
-            println("---------------------")
         }
 
     }
